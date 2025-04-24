@@ -2,8 +2,8 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>First 150 Pokémon</title>
-    <!-- Link to your CSS stylesheet -->
+    <title>List of Countries</title>
+
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
@@ -11,19 +11,21 @@
   </head>
   <body>
     <div class="container">
-      <h1>First 150 Pokémon</h1>
+      <h1>List of Countries</h1>
       <div class="card-container">
-        <!-- Loop through each Pokémon and wrap each card in a link -->
-        {% for pokemon in pokemons %}
+
+        {% for country in countries %}
         <a
-          href="{{ url_for('pokemon_detail', id=pokemon.id) }}"
+          href="{{ url_for('country_detail', name=country.name) }}"  <!-- Change link to point to a new route (optional) -->
           class="card-link"
         >
           <div class="card">
-            <img src="{{ pokemon.image }}" alt="{{ pokemon.name }}" />
+            <!-- Optionally display the country's flag image -->
+            <img src="{{ country.flag }}" alt="{{ country.name }}" width="100" />
             <div class="card-body">
-              <h5 class="card-title">{{ pokemon.name }}</h5>
-              <p class="card-text">ID: {{ pokemon.id }}</p>
+              <h5 class="card-title">{{ country.name }}</h5>
+              <p class="card-text">Capital: {{ country.capital }}</p>
+              <p class="card-text">Population: {{ country.population }}</p>
             </div>
           </div>
         </a>
