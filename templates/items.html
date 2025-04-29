@@ -28,10 +28,17 @@
 <body>
   <div class="container my-4">
     <h1 class="text-center mb-5">Minecraft Items</h1>
+    <div class="row mb-4">
+      <div class="col-md-6 offset-md-3">
+        <input type="text" id="searchBar" class="form-control" placeholder="Search items...">
+      </div>
+    </div>
+
 
     <div class="row">
       {% for item in items %}
-      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-3">
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-3 item-card" data-name="{{ item.name | lower }}">
+
         <div class="card h-100 text-center" role="button" data-bs-toggle="modal" data-bs-target="#modal{{ loop.index }}">
           <img src="{{ item.image }}" class="card-img-top" alt="{{ item.name }}">
           <div class="card-body">
@@ -62,4 +69,19 @@
   </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.getElementById('searchBar').addEventListener('keyup', function() {
+    const searchTerm = this.value.toLowerCase();
+    const items = document.querySelectorAll('.item-card');
+
+    items.forEach(item => {
+      const name = item.getAttribute('data-name');
+      if (name.includes(searchTerm)) {
+        item.style.display = '';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  });
+</script>
 </html>

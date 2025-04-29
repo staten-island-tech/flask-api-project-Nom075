@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Crafting Recipes</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      gap: 4px;
+      justify-content: center;
+    }
+    .grid img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      background-color: #eee;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">Crafting Recipes</h1>
+    <div class="row">
+      {% for recipe in recipes %}
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+        <div class="card text-center" data-bs-toggle="modal" data-bs-target="#modal{{ loop.index }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ recipe.item }}</h5>
+            <img src="{{ recipe.item_image }}" alt="{{ recipe.item }}" class="img-fluid">
+          </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modal{{ loop.index }}" tabindex="-1" aria-labelledby="modalLabel{{ loop.index }}" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel{{ loop.index }}">{{ recipe.item }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <h6>Crafting Grid:</h6>
+                <div class="grid">
+                  {% for slot in recipe.recipe %}
+                    <img src="{{ slot.image }}" alt="{{ slot.name }}">
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
