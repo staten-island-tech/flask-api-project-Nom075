@@ -2,9 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Crafting Recipes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Minecraft Recipes</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
+    .card-img-top {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      margin: 10px auto;
+    }
+    .card {
+      max-width: 220px;
+      margin: auto;
+      font-size: 14px;
+      transition: transform 0.3s ease; /* Smooth transition */
+    }
+    .card:hover {
+      transform: scale(1.05); /* Grow slightly on hover */
+    }
+    .card-body {
+      padding: 10px;
+    }
+    .card-title {
+      font-size: 16px;
+    }
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 60px);
@@ -18,28 +40,47 @@
       background-color: #eee;
       border: 1px solid #ccc;
     }
+    .btn-blue {
+      background-color: #007bff;
+      color: white;
+    }
+    .btn-blue:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 <body>
-  <div class="container mt-5">
-    <h1 class="text-center mb-4">Crafting Recipes</h1>
+  <div class="container my-4">
+    <h1 class="text-center mb-5">Minecraft Recipes</h1>
+    <div class="row mb-4">
+      <div class="col-md-6 offset-md-3">
+        <div class="d-flex">
+          <!-- Search Bar -->
+          <input type="text" id="searchBar" class="form-control" placeholder="Search recipes...">
+          <!-- Button to navigate to Items -->
+          <a href="/items" class="btn btn-blue ms-2">Go to Items</a>
+        </div>
+      </div>
+    </div>
+
     <div class="row">
       {% for recipe in recipes %}
-      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-        <div class="card text-center" data-bs-toggle="modal" data-bs-target="#modal{{ loop.index }}">
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-3 item-card" data-name="{{ recipe.item | lower }}">
+
+        <div class="card h-100 text-center" role="button" data-bs-toggle="modal" data-bs-target="#modal{{ loop.index }}">
+          <img src="{{ recipe.item_image }}" class="card-img-top" alt="{{ recipe.item }}">
           <div class="card-body">
             <h5 class="card-title">{{ recipe.item }}</h5>
-            <img src="{{ recipe.item_image }}" alt="{{ recipe.item }}" class="img-fluid">
           </div>
         </div>
-
+      
         <!-- Modal -->
         <div class="modal fade" id="modal{{ loop.index }}" tabindex="-1" aria-labelledby="modalLabel{{ loop.index }}" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="modalLabel{{ loop.index }}">{{ recipe.item }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
                 <h6>Crafting Grid:</h6>
@@ -58,5 +99,20 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.getElementById('searchBar').addEventListener('keyup', function() {
+      const searchTerm = this.value.toLowerCase();
+      const recipes = document.querySelectorAll('.item-card');
+
+      recipes.forEach(recipe => {
+        const name = recipe.getAttribute('data-name');
+        if (name.includes(searchTerm)) {
+          recipe.style.display = '';
+        } else {
+          recipe.style.display = 'none';
+        }
+      });
+    });
+  </script>
 </body>
 </html>

@@ -21,18 +21,26 @@ def home():
 # --- ITEMS PAGE ---
 @app.route("/items")
 def items():
+    # Fetch item data
     response = requests.get("https://raw.githubusercontent.com/anish-shanbhag/minecraft-api/master/data/items.json")
     if response.status_code == 200:
         data = response.json()
         items = []
+
+        # Fetch images for items
+        item_images = fetch_item_images()
+
+        # Prepare items list
         for item in data:
             items.append({
                 'name': item['name'],
                 'description': item.get('description', 'N/A'),
                 'image': item.get('image', 'N/A'),
                 'renewable': item.get('renewable', 'N/A'),
-                'stackSize': item.get('stackSize', 'N/A')
+                'stackSize': item.get('stackSize', 'N/A'),
+                'recipe': item.get('recipe', None)  # Handle recipe if available
             })
+
         return render_template("items.html", items=items)
     else:
         return "Failed to fetch item data", 500

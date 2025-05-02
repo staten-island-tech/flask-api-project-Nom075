@@ -16,12 +16,36 @@
       max-width: 220px;
       margin: auto;
       font-size: 14px;
+      transition: transform 0.3s ease; /* Smooth transition */
+    }
+    .card:hover {
+      transform: scale(1.05); /* Grow slightly on hover */
     }
     .card-body {
       padding: 10px;
     }
     .card-title {
       font-size: 16px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      gap: 4px;
+      justify-content: center;
+    }
+    .grid img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      background-color: #eee;
+      border: 1px solid #ccc;
+    }
+    .btn-blue {
+      background-color: #007bff;
+      color: white;
+    }
+    .btn-blue:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
@@ -30,10 +54,14 @@
     <h1 class="text-center mb-5">Minecraft Items</h1>
     <div class="row mb-4">
       <div class="col-md-6 offset-md-3">
-        <input type="text" id="searchBar" class="form-control" placeholder="Search items...">
+        <div class="d-flex">
+          <!-- Search Bar -->
+          <input type="text" id="searchBar" class="form-control" placeholder="Search items...">
+          <!-- Button to navigate to Recipes -->
+          <a href="/recipes" class="btn btn-blue ms-2">Go to Recipes</a>
+        </div>
       </div>
     </div>
-
 
     <div class="row">
       {% for item in items %}
@@ -59,6 +87,21 @@
                 <p><strong>Description:</strong> {{ item.description }}</p>
                 <p><strong>Renewable:</strong> {{ item.renewable }}</p>
                 <p><strong>Stack Size:</strong> {{ item.stackSize }}</p>
+
+                {% if item.recipe %}
+                  <h6>Crafting Recipe:</h6>
+                  <div class="grid">
+                    {% for slot in item.recipe %}
+                      {% if slot %}
+                        <img src="{{ slot.image }}" alt="{{ slot.name }}">
+                      {% else %}
+                        <div style="background-color: #eee; border: 1px solid #ccc;"></div>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  <p>No crafting recipe available.</p>
+                {% endif %}
               </div>
             </div>
           </div>
@@ -67,21 +110,22 @@
       {% endfor %}
     </div>
   </div>
-</body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  document.getElementById('searchBar').addEventListener('keyup', function() {
-    const searchTerm = this.value.toLowerCase();
-    const items = document.querySelectorAll('.item-card');
 
-    items.forEach(item => {
-      const name = item.getAttribute('data-name');
-      if (name.includes(searchTerm)) {
-        item.style.display = '';
-      } else {
-        item.style.display = 'none';
-      }
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.getElementById('searchBar').addEventListener('keyup', function() {
+      const searchTerm = this.value.toLowerCase();
+      const items = document.querySelectorAll('.item-card');
+
+      items.forEach(item => {
+        const name = item.getAttribute('data-name');
+        if (name.includes(searchTerm)) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
     });
-  });
-</script>
+  </script>
+</body>
 </html>
