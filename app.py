@@ -71,9 +71,9 @@ def recipes():
                             'image': item_images.get(ingredient.lower(), air_image)  # Use ingredient name to get image
                         }
                     else:
-                        recipe['recipe'][i] = {'name': 'Empty', 'image': air_image}  # Empty slot (null value)
+                        recipe['recipe'][i] = {'name': 'E', 'image': air_image}  # Empty slot (null value)
                 else:
-                    recipe['recipe'][i] = {'name': 'Empty', 'image': air_image}  # Empty slot (null value)
+                    recipe['recipe'][i] = {'name': 'E', 'image': air_image}  # Empty slot (null value)
 
         return render_template("recipes.html", recipes=recipes)
     else:
