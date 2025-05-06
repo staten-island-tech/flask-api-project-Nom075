@@ -1,83 +1,79 @@
 from flask import Flask, render_template
 import requests
+from functools import lru_cache
 
 app = Flask(__name__)
 
-# Fetch item images from items.json
+@lru_cache()
 def fetch_item_images():
     item_response = requests.get("https://raw.githubusercontent.com/anish-shanbhag/minecraft-api/master/data/items.json")
     item_images = {}
     if item_response.status_code == 200:
         items_data = item_response.json()
         for item in items_data:
-            item_images[item['name'].lower()] = item.get('image', 'N/A')  # Map item name to image
+            item_images[item['name'].lower()] = item.get('image', 'N/A')
     return item_images
 
-# --- HOME PAGE (option selector) ---
 @app.route("/")
 def home():
     return render_template("home.html")
 
-# --- ITEMS PAGE ---
 @app.route("/items")
 def items():
-    # Fetch item data
     response = requests.get("https://raw.githubusercontent.com/anish-shanbhag/minecraft-api/master/data/items.json")
-    if response.status_code == 200:
+    recipes_response = requests.get("https://raw.githubusercontent.com/anish-shanbhag/minecraft-api/master/data/recipes.json")
+    item_images = fetch_item_images()
+    air_image = "https://webstockreview.net/images/lace-clipart-square-18.png"
+
+    if response.status_code == 200 and recipes_response.status_code == 200:
         data = response.json()
+        recipes_data = recipes_response.json()
+        recipe_lookup = {r['item'].lower(): r['recipe'] for r in recipes_data}
+
         items = []
-
-        # Fetch images for items
-        item_images = fetch_item_images()
-
-        # Prepare items list
         for item in data:
+            item_name_lower = item['name'].lower()
+            raw_recipe = recipe_lookup.get(item_name_lower)
+
+            # Enrich recipe with image info
+            if raw_recipe:
+                processed_recipe = []
+                for i in range(9):
+                    ingredient = raw_recipe[i] if i < len(raw_recipe) else None
+
+                    if ingredient:
+                        if isinstance(ingredient, list):
+                            ing_name = ingredient[0]
+                        else:
+                            ing_name = ingredient
+
+                        processed_recipe.append({
+                            'name': ing_name,
+                            'image': item_images.get(ing_name.lower(), air_image) if ing_name else air_image
+                        })
+                    else:
+                        processed_recipe.append({
+                            'name': '',
+                            'image': air_image
+                        })
+            else:
+                processed_recipe = None
+
             items.append({
                 'name': item['name'],
                 'description': item.get('description', 'N/A'),
                 'image': item.get('image', 'N/A'),
                 'renewable': item.get('renewable', 'N/A'),
                 'stackSize': item.get('stackSize', 'N/A'),
-                'recipe': item.get('recipe', None)  # Handle recipe if available
+                'recipe': processed_recipe
             })
 
         return render_template("items.html", items=items)
     else:
-        return "Failed to fetch item data", 500
+        return "Failed to fetch item or recipe data", 500
 
-# --- RECIPES PAGE ---
-@app.route("/recipes")
-def recipes():
-    recipes_response = requests.get("https://raw.githubusercontent.com/anish-shanbhag/minecraft-api/master/data/recipes.json")
-    item_images = fetch_item_images()  # Get the item image dictionary
 
-    if recipes_response.status_code == 200:
-        recipes = recipes_response.json()
-
-        # Set up a placeholder for air image (this can be a blank image)
-        air_image = "https://raw.githubusercontent.com/anish-shanbhag/minecraft-api/master/data/images/air.png"  # Placeholder for air
-
-        # Add image URLs to each recipe item and ingredient
-        for recipe in recipes:
-            # Set up the image URL for the result item (e.g., Acacia Boat)
-            recipe['item_image'] = item_images.get(recipe['item'].lower(), 'N/A')  # Use item name to get image
-
-            # Add the ingredient images for the crafting grid
-            for i, ingredient in enumerate(recipe['recipe']):
-                if ingredient:
-                    if isinstance(ingredient, str):  # Check if ingredient is a string
-                        recipe['recipe'][i] = {
-                            'name': ingredient,
-                            'image': item_images.get(ingredient.lower(), air_image)  # Use ingredient name to get image
-                        }
-                    else:
-                        recipe['recipe'][i] = {'name': 'E', 'image': air_image}  # Empty slot (null value)
-                else:
-                    recipe['recipe'][i] = {'name': 'E', 'image': air_image}  # Empty slot (null value)
-
-        return render_template("recipes.html", recipes=recipes)
-    else:
-        return "Failed to fetch recipe data", 500
 
 if __name__ == '__main__':
     app.run(debug=True)
+

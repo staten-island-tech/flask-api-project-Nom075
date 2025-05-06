@@ -1,11 +1,10 @@
 /* General page styling */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    margin: 0;
-    padding: 0;
-  }
-  
+  background-image: url('https://wallpapercave.com/wp/wp2586787.jpg');
+  background-size: cover; /* Make sure the background image covers the entire page */
+  background-position: center; /* Center the image */
+}
+
   /* Container styling */
   .container {
     width: 90%;
@@ -72,26 +71,4 @@ body {
   .card-text {
     color: #555;
     margin-top: 5px;
-  }
-  
-  /* Pokémon detail page styling */
-  .pokemon-detail {
-    text-align: center;
-  }
-  
-  .pokemon-detail img {
-    width: 200px;
-    height: auto;
-    margin-bottom: 20px;
-  }
-  
-  .pokemon-detail p {
-    font-size: 1.1em;
-  }
-  
-  /* Chart container styling */
-  .pokemon-stats {
-    width: 100%;
-    max-width: 600px;
-    margin: 40px auto;
   }
