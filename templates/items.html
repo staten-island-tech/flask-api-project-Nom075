@@ -16,10 +16,10 @@
       max-width: 220px;
       margin: auto;
       font-size: 14px;
-      transition: transform 0.3s ease; /* Smooth transition */
+      transition: transform 0.3s ease;
     }
     .card:hover {
-      transform: scale(1.05); /* Grow slightly on hover */
+      transform: scale(1.05);
     }
     .card-body {
       padding: 10px;
@@ -47,6 +47,31 @@
     .btn-blue:hover {
       background-color: #0056b3;
     }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .highlighted {
+    animation: pulseGlow 1.5s infinite ease-in-out; /* Continuous pulse */
+    box-shadow: 0 0 15px 5px rgba(0, 255, 255, 0.8); /* Initial glow effect */
+    border-radius: 10px;
+    transition: box-shadow 0.3s ease-in-out;
+  }
+  
+  @keyframes pulseGlow {
+    0% {
+      box-shadow: 0 0 15px 5px rgba(0, 255, 255, 0.8); /* Initial glow */
+    }
+    50% {
+      box-shadow: 0 0 25px 15px rgba(0, 255, 255, 1); /* Max glow */
+    }
+    100% {
+      box-shadow: 0 0 15px 5px rgba(0, 255, 255, 0.8); /* Return to initial glow */
+    }
+  }
+  
+    
   </style>
 </head>
 <body>
@@ -54,25 +79,27 @@
     <h1 class="text-center mb-5">Minecraft Items</h1>
     <div class="row mb-4">
       <div class="col-md-6 offset-md-3">
-        <div class="d-flex">
-          <!-- Search Bar -->
-          <input type="text" id="searchBar" class="form-control" placeholder="Search for an item...">
-
-        </div>
+        <input type="text" id="searchBar" class="form-control" placeholder="Search for an item...">
       </div>
     </div>
 
     <div class="row">
       {% for item in items %}
-      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-3 item-card" data-name="{{ item.name | lower }}">
+      <div id="item-{{ item.name | lower | replace(' ', '-') }}" 
+           class="col-6 col-sm-4 col-md-3 col-lg-2 mb-3 item-card" 
+           data-name="{{ item.name | lower }}">
 
-        <div class="card h-100 text-center" role="button" data-bs-toggle="modal" data-bs-target="#modal{{ loop.index }}">
+        <div class="card h-100 text-center" 
+             role="button" 
+             data-bs-toggle="modal" 
+             data-bs-target="#modal{{ loop.index }}" 
+             data-modal-id="modal{{ loop.index }}">
           <img src="{{ item.image }}" class="card-img-top" alt="{{ item.name }}">
           <div class="card-body">
             <h5 class="card-title">{{ item.name }}</h5>
           </div>
         </div>
-      
+
         <!-- Modal -->
         <div class="modal fade" id="modal{{ loop.index }}" tabindex="-1" aria-labelledby="modalLabel{{ loop.index }}" aria-hidden="true">
           <div class="modal-dialog">
@@ -92,9 +119,14 @@
                   <div class="grid">
                     {% for slot in item.recipe %}
                       {% if slot %}
-                        <img src="{{ slot.image }}" alt="{{ slot.name }}">
+                        <a href="#item-{{ slot.name | lower | replace(' ', '-') }}">
+                          <img src="{{ slot.image }}"
+                               alt="{{ slot.name }}"
+                               title="{{ slot.name }}"
+                               data-bs-toggle="tooltip">
+                        </a>
                       {% else %}
-                        <div style="background-color: #eee; border: 1px solid #ccc;"></div>
+                        <div style="background-color: #eee; border: 1px solid #ccc; width: 60px; height: 60px;"></div>
                       {% endif %}
                     {% endfor %}
                   </div>
@@ -105,6 +137,7 @@
             </div>
           </div>
         </div>
+
       </div>
       {% endfor %}
     </div>
@@ -112,17 +145,58 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    document.getElementById('searchBar').addEventListener('keyup', function() {
-      const searchTerm = this.value.toLowerCase();
-      const items = document.querySelectorAll('.item-card');
+    document.addEventListener('DOMContentLoaded', function () {
+      // Enable Bootstrap tooltips
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+      });
 
-      items.forEach(item => {
-        const name = item.getAttribute('data-name');
-        if (name.includes(searchTerm)) {
-          item.style.display = '';
-        } else {
-          item.style.display = 'none';
+      // Enable search filter
+      document.getElementById('searchBar').addEventListener('keyup', function () {
+        const searchTerm = this.value.toLowerCase();
+        const items = document.querySelectorAll('.item-card');
+
+        items.forEach(item => {
+          const name = item.getAttribute('data-name');
+          item.style.display = name.includes(searchTerm) ? '' : 'none';
+        });
+      });
+
+      // Highlight item if hash is present in URL
+      function highlightFromHash() {
+        const hash = window.location.hash;
+        if (hash.startsWith("#item-")) {
+          const targetCard = document.querySelector(hash);
+          if (targetCard) {
+            // Remove highlight from all items
+            document.querySelectorAll('.item-card.highlighted').forEach(el => {
+              el.classList.remove('highlighted');
+            });
+
+            // Add persistent highlight to the target card
+            targetCard.classList.add('highlighted');
+          }
         }
+      }
+
+      highlightFromHash();
+
+      document.querySelectorAll('.grid a[href^="#item-"]').forEach(link => {
+        link.addEventListener('click', function () {
+          setTimeout(() => {
+            highlightFromHash();
+          }, 50); // Give time for hash change
+        });
+      });
+
+      document.querySelectorAll('[data-bs-toggle="modal"]').forEach(trigger => {
+        trigger.addEventListener('click', function () {
+          const card = this.closest('.item-card');
+          if (card && card.classList.contains('highlighted')) {
+            card.classList.remove('highlighted');
+          }
+        });
       });
     });
   </script>
