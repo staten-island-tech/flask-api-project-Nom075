@@ -1,95 +1,118 @@
-/* General page styling */
+/* === General Page Styling === */
 body {
-  background-image: url('https://wallpapercave.com/wp/wp2586787.jpg');
-  background-size: cover; /* Make sure the background image covers the entire page */
-  background-position: center; /* Center the image */
+
+
+  background-position: center;
+  margin: 0;
+  padding: 0;
 }
 
-  /* Container styling */
-  .container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-  }
-  
-  /* Title styling */
-  h1 {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  
-  /* Card container styling */
-  .card-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-  }
-  
-  /* Remove link default styles */
-  .card-link {
-    text-decoration: none;
-    color: inherit;
-  }
-  
-  /* Individual card styling */
-  .card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    width: 200px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
-  }
-  
-  /* Hover effect for cards */
-  .card:hover {
-    transform: scale(1.05);
-  }
-  
-  /* Card image styling */
-  .card img {
-    width: 100%;
-    height: auto;
-  }
-  
-  /* Card body styling */
-  .card-body {
-    padding: 15px;
-  }
-  
-  /* Card title styling */
-  .card-title {
-    font-size: 1.2em;
-    margin: 0;
-  }
-  
-  /* Card text styling */
-  .card-text {
-    color: #555;
-    margin-top: 5px;
-  }
+html {
+  scroll-behavior: smooth;
+}
 
-  .highlighted {
-    animation: pulseGlow 1.5s infinite ease-in-out; /* Continuous pulse */
-    box-shadow: 0 0 15px 5px rgba(0, 255, 255, 0.8); /* Initial glow effect */
-    border-radius: 10px;
-    transition: box-shadow 0.3s ease-in-out;
-  }
-  
-  @keyframes pulseGlow {
-    0% {
-      box-shadow: 0 0 15px 5px rgba(0, 255, 255, 0.8); /* Initial glow */
-    }
-    50% {
-      box-shadow: 0 0 25px 15px rgba(0, 255, 255, 1); /* Max glow */
-    }
-    100% {
-      box-shadow: 0 0 15px 5px rgba(0, 255, 255, 0.8); /* Return to initial glow */
-    }
-  }
+/* === Container Styling === */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+}
 
-  
+/* === Title === */
+h1 {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* === Card Styling === */
+.item-card {
+  max-width: 220px;
+  margin: auto;
+  font-size: 14px;
+}
+
+.card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  height: 100%;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card-img-top {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin: 10px auto 0;
+}
+
+.card-body {
+  padding: 10px;
+}
+
+.card-title {
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+/* === Crafting Grid === */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 60px);
+  gap: 4px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.grid img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  background-color: #eee;
+  border: 1px solid #ccc;
+}
+
+.grid div {
+  width: 60px;
+  height: 60px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+}
+
+/* === Buttons === */
+.btn-blue {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-blue:hover {
+  background-color: #0056b3;
+}
+
+/* === Highlight Glow === */
+.highlighted {
+  animation: pulseGlow 1.5s infinite ease-in-out;
+  box-shadow: 0 0 15px 5px rgba(0, 255, 255, 0.8);
+  border-radius: 10px;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 15px 5px rgba(0, 255, 255, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 25px 15px rgba(0, 255, 255, 1);
+  }
+  100% {
+    box-shadow: 0 0 15px 5px rgba(0, 255, 255, 0.8);
+  }
+}
