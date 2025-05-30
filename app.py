@@ -29,7 +29,7 @@ def items():
         data = response.json()
         recipes_data = recipes_response.json()
         recipe_lookup = {r['item'].lower(): r['recipe'] for r in recipes_data}
-
+        print(recipe_lookup)
         items = []
         for item in data:
             item_name_lower = item['name'].lower()
